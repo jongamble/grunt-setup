@@ -3,76 +3,76 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    compass: {                  // Task
-      dist: {                   // Target
-        options: {              // Target options
-          sassDir: 'test/scss',
-          cssDir: 'lib/css',
-          environment: 'production',
-          require: 'susy'
-        }
-      },
-      dev: {                    // Another target
+    compass: {
+      dev: {
         options: {
-          sassDir: 'test/scss',
+          sassDir: 'src/scss',
           cssDir: 'lib/css',
-          require: 'susy'
+          require: 'susy',
+          outputStyle: 'expanded'
         }
+      }
+    },
+    imagemin: {
+      dynamic: {
+        options: {
+          optimizationLevel: 3
+        },
+        files: [{
+          expand: true,
+          cwd: 'src/img/',
+          src: ['**/*.{png,jpg,gif}'],
+          dest: 'lib/img/'
+        }]
       }
     },
     concat: {
       options: {
-        stripBanners: true,
-        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-          '<%= grunt.template.today("yyyy-mm-dd") %> */'
+        separator: ';',
       },
       dist: {
-        src: ['test/js/scripts.js'],
-        dest: 'lib/js/scripts.min.js'
-      }
-    },
-    imagemin: {                          // Task
-      dynamic: {                         // Another target
-        options: {                       // Target options
-          optimizationLevel: 3
-        },
-        files: [{
-          expand: true,                  // Enable dynamic expansion
-          cwd: 'test/img/',                   // Src matches are relative to this path
-          src: ['**/*.{png,jpg,gif}'],   // Actual patterns to match
-          dest: 'lib/img/'                  // Destination path prefix
-        }]
-      }
-    },
-    jshint: {
-      all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js'],
-      beforeconcat: ['test/js/scripts.js'],
-      afterconcat: ['lib/js/scripts.js']
+        src: ['src/js/src/*.js'],
+        dest: 'src/js/scripts.js',
+      },
     },
     uglify: {
       options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+        preserveComments: 'some'
       },
-      build: {
-        src: 'src/<%= pkg.name %>.js',
-        dest: 'build/<%= pkg.name %>.min.js'
+      my_target: {
+        files: {
+          'lib/js/scripts.min.js': ['src/js/scripts.js'],
+          'lib/js/selectivizr.min.js': ['src/js/selectivizr.js'],
+          'lib/js/modernizer.min.js': ['src/js/modernizer.js']
+        }
       }
     },
     watch: {
       options: {
         livereload: true,
+        force: true
       },
       css: {
-        files: ['test/**/*'],
+        files: ['src/scss/**/*', 'src/scss/*'],
         tasks: ['compass'],
+        options: {
+          livereload: true
+        }
       },
       another: {
-        files: ['test/js/*.js'],
-        tasks: ['jshint', 'concat', 'uglify'],
+        files: ['src/js/src/*.js'],
+        tasks: ['concat', 'uglify'],
         options: {
-          livereload: true,
-        },
+          livereload: true
+        }
       },
+      img: {
+        files: ['src/img/*'],
+        tasks: ['imagemin'],
+        options: {
+          livereload: true
+        }
+      }
     },
   });
 
@@ -81,10 +81,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task(s).
-  grunt.registerTask('default', ['uglify', 'compass', 'concat', 'imagemin', 'jshint', 'watch']);
+  grunt.registerTask('default', ['compass', 'imagemin', 'concat', 'uglify', 'watch']);
 
 };
