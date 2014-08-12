@@ -1,0 +1,12 @@
+// Mixin to deal with Media Queries inside of SCSS, rather than having seperate stylesheets for each
+@mixin bp($point) {
+	@if $point == eight-column {
+		@media screen and (min-width: 40em) { @content; }
+	}
+	@else if $point == twelve-column {
+		@media screen and (min-width: 60em) { @content; }
+	}
+	@else if $point == sixteen-column {
+		@media screen and (min-width: 80em) { @content; }
+	}
+}

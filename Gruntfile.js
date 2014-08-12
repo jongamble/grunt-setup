@@ -3,15 +3,15 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    compass: {
-      dev: {
-        options: {
-          sassDir: 'src/scss',
-          cssDir: 'lib/css',
-          require: 'susy',
-          outputStyle: 'expanded'
+    sass: {
+      dist: {                               // Target
+          options: {                        // Target options
+            style: 'compressed'
+          },
+          files: {                          // Dictionary of files
+            'lib/css/main.css': 'src/scss/main.scss'
+          }
         }
-      }
     },
     imagemin: {
       dynamic: {
@@ -31,19 +31,21 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: ['src/js/src/*.js'],
-        dest: 'src/js/scripts.js',
+        files: {
+          'lib/js/scripts.js': ['src/js/vendor/*.js', 'src/js/main.js'],
+          'lib/js/ie8.js': ['src/js/fallbacks-polyfills/*.js', 'src/js/ie8.js'],
+        },
       },
     },
     uglify: {
       options: {
-        preserveComments: 'some'
+        preserveComments: 'none'
       },
       my_target: {
         files: {
-          'lib/js/scripts.min.js': ['src/js/scripts.js'],
-          'lib/js/selectivizr.min.js': ['src/js/selectivizr.js'],
-          'lib/js/modernizer.min.js': ['src/js/modernizer.js']
+          'lib/js/modernizr-min.js': ['src/js/modernizr.2.7.2.js'],
+          'lib/js/scripts-min.js': ['lib/js/scripts.js'],
+          'lib/js/ie8-min.js': ['lib/js/ie8.js'],
         }
       }
     },
@@ -54,12 +56,19 @@ module.exports = function(grunt) {
       },
       css: {
         files: ['src/scss/**/*', 'src/scss/*'],
-        tasks: ['compass'],
+        tasks: ['sass'],
         options: {
           livereload: true
         }
       },
-      another: {
+      markup: {
+        files: ['**/*.html', '**/*.php'],
+        tasks: [],
+        options: {
+          livereload: true,
+        }
+      },
+      javascript: {
         files: ['src/js/src/*.js'],
         tasks: ['concat', 'uglify'],
         options: {
@@ -78,12 +87,12 @@ module.exports = function(grunt) {
 
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-compass');
+  grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task(s).
-  grunt.registerTask('default', ['compass', 'imagemin', 'concat', 'uglify', 'watch']);
+  grunt.registerTask('default', ['sass', 'imagemin', 'concat', 'uglify', 'watch']);
 
 };

@@ -1,0 +1,54 @@
+// Generic Setup Styles
+body, select, input, textarea {
+	color: #7f8c8d;
+	font-family: Verdana, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: none;
+	-webkit-backface-visibility: hidden;
+	line-height: 1.25;
+}
+
+body {
+	background-color: #f7f7f7;
+	overflow-x: hidden;
+}
+
+::-moz-selection { color: #fff; background: #2c3e50; }
+::selection { color: #fff; background: #2c3e50; } 
+
+::-webkit-input-placeholder { color: #695b54; }
+:-moz-placeholder {color: #695b54; }
+::-moz-placeholder { color: #695b54; }
+:-ms-input-placeholder { color: #695b54; }
+
+*, *:after, *:before {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+input { border-radius: 0; }// Getting rid of all the default border radius that gets applied to inputs on mobile safari
+
+.clear { margin: 0; padding: 0; outline: none; border: none; }
+.clearfix { @include clearfix(); }
+a {outline: none; border: none; color: #03357f; &:hover { text-decoration: none; } }
+section { position: relative; }
+img {
+	max-width: 100%; //fluid images
+	height: auto; //Force correct aspect ratio in case we need it.
+	vertical-align: middle;
+}
+
+nav ul,
+nav ol { margin: 0; padding: 0; list-style: none; }
+
+// Global Site Wrapper
+.wrapper {
+	margin: 0 auto; position: relative; padding: 0 10px; z-index: 1; width: 100%; overflow: hidden;
+	@include bp(twelve-column) {
+		width: 960px;
+	}
+	@include bp(sixteen-column) {
+		width: 1280px;
+	}
+}
